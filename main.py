@@ -1,19 +1,38 @@
-
-def GetCreditCardVendor(card_INN):
+def GetCreditCardVendor(card_number):
 
     """ Task 1 """
 
-    vendors = { 'AmericanExpress'   : list(range(340000, 350000)) + list(range(370000, 380000)),
-                'Maestro'           : list(range(500000, 510000)) + list(range(560000, 700000)),
-                'MasterCard'        : list(range(510000, 560000)),
-                'VISA'              : list(range(400000, 500000)),
-                'JSB'               : list(range(352800, 359000))
+    vendors_INN = { 
+                        'AmericanExpress'   : list(range(340000, 350000)) + list(range(370000, 380000)),
+                        'Maestro'           : list(range(500000, 510000)) + list(range(560000, 700000)),
+                        'MasterCard'        : list(range(510000, 560000)),
+                        'VISA'              : list(range(400000, 500000)),
+                        'JSB'               : list(range(352800, 359000))
     }
 
-    for vendor in vendors:  
-        for vendor_INN in vendors[vendor]:  
+    vendors_length = {
+                        'AmericanExpress'   : [15,],
+                        'Maestro'           : list(range(12, 20)),
+                        'MasterCard'        : [16,],
+                        'VISA'              : [13, 16, 19],
+                        'JSB'               : [16,]
+    }
+
+    card_INN = int(card_number[:6]) 
+
+    for vendor in vendors_INN:  
+        for vendor_INN in vendors_INN[vendor]:  
             if card_INN == vendor_INN:
-                return vendor
+                for vendor_length in vendors_length[vendor]:
+                    if len(card_number) == vendor_length:
+                        return vendor
+                else:
+                    print('Your card INN looks like {}`s INN, but length of your credit number is {}.'.format(vendor, len(card_number)))
+                    print('Valid length for {} is {}.'.format(vendor, vendors_length[vendor])) 
+                    global formatted_card_number # rewriting for correct output
+                    formatted_card_number = formatting_input()
+                    vendor = GetCreditCardVendor(formatted_card_number)
+                    return vendor
     return 'Unknown'
 
 
@@ -71,7 +90,7 @@ def GenerateNextCreditNumber(card_number):
 def formatting_input():
     
     '''Checking, formatting input card number. 
-        * if card number length not equal 16, then input is incorrect'''
+        * if card number length not equal 12 .. 19, then input is incorrect'''
     
     print('''
          ___________________________________
@@ -101,15 +120,16 @@ def formatting_input():
         try:
             int(digit)
         except ValueError:
-            print('Incorrect input. Please try again.', end = '')
+            print('Incorrect input. Credit number can`t have symbols only digits. Please try again.', end = '')
             formatted_card_number = formatting_input()
             return formatted_card_number
         formatted_card_number += digit
 
     # check card number to legth
     # if input is not correct, then input starts again (recursion)
-    if len(formatted_card_number) != 16:
-        print('Incorrect input. Please try again.', end = '')
+    lenght_list = list(range(12, 20))
+    if len(formatted_card_number) not in lenght_list:
+        print('Incorrect input. Credit number is valid if length equal 12..19. Please try again.', end = '')
         formatted_card_number = formatting_input()
         return formatted_card_number
 
@@ -142,11 +162,11 @@ def card(formatted_card_number, last_part):
         |             =(/\./\)=             | 
         |              (")_(")              |
         |                                   |
-        |       {}  {}  {}  {}      |                       
+        |    {:>5}  {:>5}  {:>5}  {:>5}     |                       
         |          {:>24} |
         |___________________________________|
-    '''.format(formatted_card_number[:4], formatted_card_number[4:8], \
-        formatted_card_number[8:12], formatted_card_number[12:], last_part)
+    '''.format(formatted_card_number[ : len(formatted_card_number)//4], formatted_card_number[len(formatted_card_number)//4 : 2*len(formatted_card_number)//4], \
+        formatted_card_number[2*len(formatted_card_number)//4 : 3*len(formatted_card_number)//4], formatted_card_number[3*len(formatted_card_number)//4 : ], last_part)
     print(card)
 
 #
@@ -162,7 +182,7 @@ while menu != '5':
         
         # task 1
         formatted_card_number = formatting_input()
-        card_vendor = GetCreditCardVendor(int(formatted_card_number[:6]))
+        card_vendor = GetCreditCardVendor(formatted_card_number)
         card(formatted_card_number, 'Vendor - ' + card_vendor)
         print('Card vender is', card_vendor)
 
@@ -189,7 +209,7 @@ while menu != '5':
         formatted_card_number = formatting_input()
         next_card_number = GenerateNextCreditNumber(formatted_card_number)
         card(next_card_number, '')
-        print('Next card number is ', next_card_number)
+        print('Next valid card number is ', next_card_number)
 
         break;
 
@@ -200,7 +220,7 @@ while menu != '5':
         formatted_card_number = formatting_input()
        
         # task 1
-        card_vendor = GetCreditCardVendor(int(formatted_card_number[:6]))
+        card_vendor = GetCreditCardVendor(formatted_card_number)
         card(formatted_card_number, 'Vendor - ' + card_vendor)
         print('Card vender is', card_vendor)
        
@@ -214,7 +234,7 @@ while menu != '5':
         
         # task 3
         next_card_number = GenerateNextCreditNumber(formatted_card_number)
-        print('Next credit number is ', next_card_number)
+        print('Next valid credit number is ', next_card_number)
         
         break;
 
