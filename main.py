@@ -194,7 +194,9 @@ while menu != '5':
         card(formatted_card_number, 'Vendor - ' + card_vendor)
         print('Card vender is', card_vendor)
 
-        exit()
+        interface()               
+        menu = input()
+
 
     elif menu == '2':
         
@@ -209,7 +211,9 @@ while menu != '5':
             card(formatted_card_number, '')
             print('Card number is invalid')
   
-        exit()
+        interface()               
+        menu = input()
+
    
     elif menu == '3':
        
@@ -219,8 +223,8 @@ while menu != '5':
         card(next_card_number, '')
         print('Next valid card number is ', next_card_number)
 
-        exit()
-
+        interface()               
+        menu = input()
 
 
     elif menu == '4': 
@@ -244,7 +248,9 @@ while menu != '5':
         next_card_number = GenerateNextCreditNumber(formatted_card_number)
         print('Next valid credit number is ', next_card_number)
         
-        exit()
+        interface()               
+        menu = input()
+
 
     else:
         
@@ -253,4 +259,3 @@ while menu != '5':
         interface()
         menu = input()
 
-exit()
