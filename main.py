@@ -77,14 +77,20 @@ def GenerateNextCreditNumber(card_number):
     """ Task 3 """
 
     valid = False
+    vendor = GetCreditCardVendor(card_number)
     next_card_number = int(card_number)
 
     while not valid:
         
         next_card_number += 1
         valid = IsCreditCardNumberValid(str(next_card_number))
-        
-    return str(next_card_number)
+
+    next_card_vendor = GetCreditCardVendor(str(next_card_number))
+    if vendor != next_card_vendor:
+        print('No more credit numbers available for this vendor')
+        return None    
+    else:
+        return str(next_card_number)
 
 
 def formatting_input():
