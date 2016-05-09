@@ -18,6 +18,10 @@ def GetCreditCardVendor(card_number):
                         'JSB'               : [16,]
     }
 
+    valid = IsCreditCardNumberValid(str(card_number))
+    if not valid:
+        return 'Unknown'
+
     card_INN = int(card_number[:6]) 
 
     for vendor in vendors_INN:  
@@ -26,13 +30,7 @@ def GetCreditCardVendor(card_number):
                 for vendor_length in vendors_length[vendor]:
                     if len(card_number) == vendor_length:
                         return vendor
-                else:
-                    print('Your card INN looks like {}`s INN, but length of your credit number is {}.'.format(vendor, len(card_number)))
-                    print('Valid length for {} is {}.'.format(vendor, vendors_length[vendor])) 
-                    global formatted_card_number # rewriting for correct output
-                    formatted_card_number = formatting_input()
-                    vendor = GetCreditCardVendor(formatted_card_number)
-                    return vendor
+              
     return 'Unknown'
 
 
@@ -77,6 +75,7 @@ def GenerateNextCreditNumber(card_number):
     """ Task 3 """
 
     valid = False
+
     vendor = GetCreditCardVendor(card_number)
     next_card_number = int(card_number)
 
@@ -86,9 +85,12 @@ def GenerateNextCreditNumber(card_number):
         valid = IsCreditCardNumberValid(str(next_card_number))
 
     next_card_vendor = GetCreditCardVendor(str(next_card_number))
-    if vendor != next_card_vendor:
+
+    if vendor == 'Unknown' and next_card_vendor != 'Unknown':
+        return str(next_card_number)
+    elif vendor != next_card_vendor :
         print('No more credit numbers available for this vendor')
-        return None    
+        return None  
     else:
         return str(next_card_number)
 
@@ -192,7 +194,7 @@ while menu != '5':
         card(formatted_card_number, 'Vendor - ' + card_vendor)
         print('Card vender is', card_vendor)
 
-        break;
+        exit()
 
     elif menu == '2':
         
@@ -207,7 +209,7 @@ while menu != '5':
             card(formatted_card_number, '')
             print('Card number is invalid')
   
-        break;
+        exit()
    
     elif menu == '3':
        
@@ -217,7 +219,7 @@ while menu != '5':
         card(next_card_number, '')
         print('Next valid card number is ', next_card_number)
 
-        break;
+        exit()
 
 
 
@@ -242,7 +244,7 @@ while menu != '5':
         next_card_number = GenerateNextCreditNumber(formatted_card_number)
         print('Next valid credit number is ', next_card_number)
         
-        break;
+        exit()
 
     else:
         
@@ -250,3 +252,5 @@ while menu != '5':
         print(menu, " command not found")
         interface()
         menu = input()
+
+exit()
